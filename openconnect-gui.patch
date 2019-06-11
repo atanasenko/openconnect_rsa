@@ -1,4 +1,4 @@
-From 67cdecec261df6045ac1dcf1345bcaffabb01cf5 Mon Sep 17 00:00:00 2001
+From 5e8dd394773c4f95844303f43a0541b9546cea73 Mon Sep 17 00:00:00 2001
 From: Anton Tanasenko <atg.sleepless@gmail.com>
 Date: Tue, 11 Jun 2019 23:56:11 +0300
 Subject: [PATCH] Use '--' value to let stoken read .stokenrc
@@ -8,7 +8,7 @@ Subject: [PATCH] Use '--' value to let stoken read .stokenrc
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/vpninfo.cpp b/src/vpninfo.cpp
-index 1450c0f..0aa941c 100644
+index e2c2b01..4e79acf 100644
 --- a/src/vpninfo.cpp
 +++ b/src/vpninfo.cpp
 @@ -417,7 +417,7 @@ VpnInfo::VpnInfo(QString name, StoredServer* ss, MainWindow* m)
@@ -19,4 +19,4 @@ index 1450c0f..0aa941c 100644
 +            ss->get_token_str() == "--" ? NULL : ss->get_token_str().toLatin1().data());
      }
  
-     openconnect_set_protocol(vpninfo, ss->get_protocol_name());
+     openconnect_set_protocol(vpninfo, ss->get_protocol());
