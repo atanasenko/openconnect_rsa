@@ -1,12 +1,69 @@
-From 5e8dd394773c4f95844303f43a0541b9546cea73 Mon Sep 17 00:00:00 2001
+From 9e3ea59a90db16c73917b22cde429cc667c67ca8 Mon Sep 17 00:00:00 2001
 From: Anton Tanasenko <atg.sleepless@gmail.com>
 Date: Tue, 11 Jun 2019 23:56:11 +0300
-Subject: [PATCH] Use '--' value to let stoken read .stokenrc
+Subject: [PATCH] Use '--' value to let stoken read .stokenrc, add stoken
+ binaries
 
 ---
- src/vpninfo.cpp | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../ProjectExternals_openconnect.cmake        | 40 +++++++++++++++++++
+ src/vpninfo.cpp                               |  2 +-
+ 2 files changed, 41 insertions(+), 1 deletion(-)
 
+diff --git a/CMake/Includes/ProjectExternals_openconnect.cmake b/CMake/Includes/ProjectExternals_openconnect.cmake
+index 611db69..55b1c27 100644
+--- a/CMake/Includes/ProjectExternals_openconnect.cmake
++++ b/CMake/Includes/ProjectExternals_openconnect.cmake
+@@ -72,6 +72,12 @@ ExternalProject_Add_Step(openconnect-${openconnect-TAG} deploy_libs
+ add_executable(openconnect::app IMPORTED)
+ set_property(TARGET openconnect::app PROPERTY IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/external/lib/openconnect.exe)
+ 
++add_executable(openconnect::stokenexe IMPORTED)
++set_property(TARGET openconnect::stokenexe PROPERTY IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/external/lib/stoken.exe)
++
++add_executable(openconnect::stokenguiexe IMPORTED)
++set_property(TARGET openconnect::stokenguiexe PROPERTY IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/external/lib/stoken-gui.exe)
++
+ add_library(openconnect::gmp SHARED IMPORTED)
+ set_property(TARGET openconnect::gmp PROPERTY IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/external/lib/libgmp-10.dll)
+ set_property(TARGET openconnect::gmp PROPERTY IMPORTED_IMPLIB ${CMAKE_BINARY_DIR}/external/lib/libgmp.dll.a)
+@@ -112,3 +118,37 @@ install(
+     DESTINATION .
+     COMPONENT App_Console
+ )
++
++
++install(
++    FILES
++        ${CMAKE_BINARY_DIR}/external/lib/stoken-gui.exe
++        ${CMAKE_BINARY_DIR}/external/lib/stoken.exe
++        ${CMAKE_BINARY_DIR}/external/lib/libatk-1.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libcairo-2.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libcairo-gobject-2.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libdatrie-1.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libepoxy-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libexpat-1.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libfontconfig-1.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libfribidi-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libgdk-3-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libgdk_pixbuf-2.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libgio-2.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libglib-2.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libgmodule-2.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libgobject-2.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libgtk-3-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libpango-1.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libpangocairo-1.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libpangoft2-1.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libpangowin32-1.0-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/libpixman-1-0.dll
++        ${CMAKE_BINARY_DIR}/external/lib/password-dialog.ui
++        ${CMAKE_BINARY_DIR}/external/lib/pin-dialog.ui
++        ${CMAKE_BINARY_DIR}/external/lib/tokencode-detail.ui
++        ${CMAKE_BINARY_DIR}/external/lib/tokencode-small.ui
++        ${CMAKE_BINARY_DIR}/external/lib/stoken-gui.png
++    DESTINATION .
++    COMPONENT App
++)
 diff --git a/src/vpninfo.cpp b/src/vpninfo.cpp
 index e2c2b01..4e79acf 100644
 --- a/src/vpninfo.cpp

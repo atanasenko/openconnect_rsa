@@ -39,6 +39,8 @@ pacman --needed -S \
 export ST_TAG=v0.92
 export OC_TAG=v7.08
 export OC_GUI_TAG=v1.5.3
+# compile gtk apps without console
+export GTK_CFLAGS="-mwindows $(pkg-config --cflags 'gtk+-3.0' 2>/dev/null)"
 ```
 
 4. Build stoken
@@ -67,9 +69,9 @@ curl https://raw.githubusercontent.com/atanasenko/openconnect_rsa/master/opencon
 ./autogen.sh
 [ -d build ] || mkdir build
 cd build
-git clean -fdx
-../configure --disable-dependency-tracking --with-gnutls --without-openssl --without-libpskc --with-vpnc-script=vpnc-script-win.js
-make -j4
+git clean -fdx && \
+  ../configure --disable-dependency-tracking --with-gnutls --without-openssl --without-libpskc --with-vpnc-script=vpnc-script-win.js && \
+  make -j4
 
 rm -rf pkg
 mkdir pkg && cd pkg
@@ -87,7 +89,6 @@ cp ${MINGW_PREFIX}/bin/libtasn1-6.dll .
 cp ${MINGW_PREFIX}/bin/libwinpthread-1.dll .
 cp ${MINGW_PREFIX}/bin/libxml2-2.dll .
 cp ${MINGW_PREFIX}/bin/zlib1.dll .
-cp ${MINGW_PREFIX}/bin/libstoken-1.dll .
 cp ${MINGW_PREFIX}/bin/libproxy-1.dll .
 cp ${MINGW_PREFIX}/bin/liblz4.dll .
 cp ${MINGW_PREFIX}/bin/libiconv-2.dll .
@@ -97,8 +98,36 @@ cp ${MINGW_PREFIX}/bin/libstdc++-6.dll .
 cp ${MINGW_PREFIX}/bin/liblzma-5.dll .
 cp ../../.libs/libopenconnect-5.dll .
 cp ../../.libs/openconnect.exe .
+
+cp ${MINGW_PREFIX}/bin/libatk-1.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libcairo-2.dll .
+cp ${MINGW_PREFIX}/bin/libcairo-gobject-2.dll .
+cp ${MINGW_PREFIX}/bin/libdatrie-1.dll .
+cp ${MINGW_PREFIX}/bin/libepoxy-0.dll .
+cp ${MINGW_PREFIX}/bin/libexpat-1.dll .
+cp ${MINGW_PREFIX}/bin/libfontconfig-1.dll .
+cp ${MINGW_PREFIX}/bin/libfribidi-0.dll .
+cp ${MINGW_PREFIX}/bin/libgdk-3-0.dll .
+cp ${MINGW_PREFIX}/bin/libgdk_pixbuf-2.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libgio-2.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libglib-2.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libgmodule-2.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libgobject-2.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libgtk-3-0.dll .
+cp ${MINGW_PREFIX}/bin/libpango-1.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libpangocairo-1.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libpangoft2-1.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libpangowin32-1.0-0.dll .
+cp ${MINGW_PREFIX}/bin/libpixman-1-0.dll .
+cp ../../../../stoken/build/.libs/libstoken-1.dll .
+cp ../../../../stoken/build/.libs/stoken.exe .
+cp ../../../../stoken/build/.libs/stoken-gui.exe .
+cp ../../../../stoken/gui/*.ui .
+cp ../../../../stoken/gui/*.png .
+
+
 curl -v -o vpnc-script-win.js http://git.infradead.org/users/dwmw2/vpnc-scripts.git/blob_plain/HEAD:/vpnc-script-win.js
-7za a -tzip -mx=9 -sdel ../../openconnect-${OC_TAG}_mingw64.zip *
+7za a -tzip -mx=9 ../../openconnect-${OC_TAG}_mingw64.zip *
 cd ..
 
 mkdir devel && cd devel
@@ -142,7 +171,7 @@ cp ${MINGW_PREFIX}/include/stoken.h .
 cp ../../../../openconnect.h .
 cd ..
 
-7za a -tzip -mx=9 -sdel ../../openconnect-devel-${OC_TAG}_mingw64.zip *
+7za a -tzip -mx=9 ../../openconnect-devel-${OC_TAG}_mingw64.zip *
 cd ../../../..
 ```
 
@@ -159,9 +188,10 @@ cp ../openconnect/build/openconnect-devel-${OC_TAG}_mingw64.zip external/
 
 [ -d build ] || mkdir build
 cd build
-cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release ..
-make
-make package
+git clean -fdx && \
+  cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release .. && \
+  make && \
+  make package
 
 cd ../..
 ```
